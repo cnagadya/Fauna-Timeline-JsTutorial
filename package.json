@@ -1,0 +1,27 @@
+{
+  "name": "timeline",
+  "version": "1.0.0",
+  "description": "FaunaDB Timeline JS  Tutorial",
+  "main": "timeline.js",
+  "scripts": {
+    "start": "node timeline.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cnagadya/Fauna-Timeline-JsTutorial.git"
+  },
+  "keywords": [
+    "FaunaDB",
+    "Timeline"
+  ],
+  "author": "cnagadya",
+  "license": "ISC",
+  "dependencies": {
+    "faunadb": "^2.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/cnagadya/Fauna-Timeline-JsTutorial/issues"
+  },
+  "homepage": "https://github.com/cnagadya/Fauna-Timeline-JsTutorial#readme"
+}
