@@ -1,7 +1,8 @@
 
+
 var faunadb = require("faunadb"),
   q = faunadb.query,
-  client = new faunadb.Client({ secret:  'YOUR_FAUNADB_ADMIN_SECRET' }),
+  client = new faunadb.Client({ secret:  'fnACzV5N-BACB_lWeHqo6AKVKj6bnCdnU7wt9g2n' }),
   db_name = "car_dealers",
   db_role = "server",
   class_name = "cars",
@@ -10,8 +11,14 @@ var faunadb = require("faunadb"),
   new_instance_data = { license: "ATETHEDUST",price: 50000 },
   insert_ts=Math.floor((new Date()).getTime()/ 1000),
   resurrect_ts = insert_ts + 1;
-  
-client.query(
+
+ // createCarDealer()
+ // createCarInCarDealer()
+ // createMustangInstanceInCar()
+ // updateMustang()
+// xs.
+
+var car_dealer_key = client.query(
   q.Do(
     // Check if db named "car_dealer" exists else create it
     q.If(q.Exists(q.Database(db_name)),"exists", q.CreateDatabase({ name : db_name })),
@@ -21,14 +28,17 @@ client.query(
       secret : q.Select("secret", q.CreateKey({ database: q.Database(db_name), role: db_role }))
     }
   ),
-).then(function(data) {
+)
+  
+car_dealer_key.then(function(data) {
   // Set client secret to the "car_dealer" key
   client = new faunadb.Client({ secret: data.secret });
   
   // ==============Set Up ======================
   
   // Create cars class
-  
+  return client
+}).then(function(client) { 
   client.query(
       // Check if "cars" exists in "car_dealer" else create it
     q.If(q.Exists(q.Class(class_name)),"exists", q.CreateClass({ name: class_name }))
@@ -100,17 +110,13 @@ client.query(
                           // Insert Events
                           client.query(
                             q.Insert(
-                              q.Ref(reference),
-                              insert_ts,
-                              "create",
-                              q.Let(
-                                { current: q.Get(q.Ref(reference)) },
-                                {
-                                  data: {
+                              q.Ref(reference), insert_ts, "create",
+                              q.Let({ current: q.Get(q.Ref(reference)) },
+                                { data: {
                                     model: q.Select(["data", "model"], q.Var("current")),
                                     license: q.Select(["data", "license"], q.Var("current")),
-                                    price: 30000
-                                  }}))).then(function(inserted_event){
+                                    price: 30000}
+                                }))).then(function(inserted_event){
                                     console.log("\n \n ============Inserting Event================");
                                     console.log(inserted_event);
                                     client.query(
@@ -162,8 +168,24 @@ client.query(
                                             })).then(function(multiple_events){
                                               console.log("\n \n==========Changing Many Events=========");
                                               console.log(multiple_events);
-                                            })
-
+                                            });
+                                            client.query(
+                                              q.Map(
+                                                q.Paginate(
+                                                  q.Ref(reference),
+                                                  { events: true }),
+                                                function(event) {
+                                                  return q.If(
+                                                    q.Equals(q.Select("action", event), "create"),
+                                                    q.Get(
+                                                      q.Select("resource", event),
+                                                      q.Select("ts", event)),
+                                                    q.Select("ts", event));
+                                                })
+                                              ).then(function(data){
+                                                  console.log("\n\n==========Checking for existence======");
+                                                  console.log(data);
+                                                });
 
                                           });
                                   });
