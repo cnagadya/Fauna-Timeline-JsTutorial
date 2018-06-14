@@ -1,8 +1,8 @@
-
+'use strict';
 
 var faunadb = require("faunadb"),
   q = faunadb.query,
-  client = new faunadb.Client({ secret:  'fnACzV5N-BACB_lWeHqo6AKVKj6bnCdnU7wt9g2n' }),
+  client = new faunadb.Client({ secret:  'YOUR_FAUNADB_ADMIN_SECRET' }),
   db_name = "car_dealers",
   db_role = "server",
   class_name = "cars",
@@ -12,13 +12,7 @@ var faunadb = require("faunadb"),
   insert_ts=Math.floor((new Date()).getTime()/ 1000),
   resurrect_ts = insert_ts + 1;
 
- // createCarDealer()
- // createCarInCarDealer()
- // createMustangInstanceInCar()
- // updateMustang()
-// xs.
-
-var car_dealer_key = client.query(
+client.query(
   q.Do(
     // Check if db named "car_dealer" exists else create it
     q.If(q.Exists(q.Database(db_name)),"exists", q.CreateDatabase({ name : db_name })),
@@ -27,10 +21,7 @@ var car_dealer_key = client.query(
     {
       secret : q.Select("secret", q.CreateKey({ database: q.Database(db_name), role: db_role }))
     }
-  ),
-)
-  
-car_dealer_key.then(function(data) {
+  )).then(function(data) {
   // Set client secret to the "car_dealer" key
   client = new faunadb.Client({ secret: data.secret });
   
