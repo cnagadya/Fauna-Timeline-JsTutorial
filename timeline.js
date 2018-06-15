@@ -43,7 +43,6 @@ q.Do(
     " and price: " + instance.data.price + " created.");
   
   // Update the instance
-  console.log("\n ============ Updating Instance ================")
   return client.query(
     q.Update(q.Ref(reference), { data: new_instance_data }))
 })
@@ -60,7 +59,6 @@ q.Do(
   }
 
   // Get Events
-  console.log("\n ============Getting Events ================");
   return client.query(
     q.Paginate(q.Ref(reference), { events: true }))
 })
@@ -71,8 +69,7 @@ q.Do(
   console.log("\nPulls raw events\n");
   console.log(Object.values(events)[0]);
 
-   // Get Past Data
-   console.log("\n ============ Getting Past Data================");
+  // Get Past Data
   return client.query(
     q.Map(
       q.Paginate(
@@ -111,7 +108,6 @@ q.Do(
   console.log(instance_state.data);
                         
   // Insert Events
-  console.log("\n \n ============Inserting Event================");
   return client.query(
     q.Insert(
       q.Ref(reference),
@@ -134,7 +130,6 @@ q.Do(
   console.log(inserted_event);
   
   // fetch inserted data
-  console.log("\n \n============ Fetching Inserted Event Data================");
   return client.query(
     q.Get(
       q.Ref(reference),
@@ -144,9 +139,7 @@ q.Do(
 .then(function(inserted_data) {
   console.log("\n ============ Inserted Event Data================");
   console.log(inserted_data);
-  
-  // fetch inserted data
-  console.log("\n ============ Delete ================");
+
   return client.query(
     q.Insert(
       q.Ref(reference), 
@@ -156,7 +149,7 @@ q.Do(
   )
 })   
 .then(function(data){
-  console.log("\n ========== Deleted =========");
+  console.log("\n ========== Delete =========");
   console.log("\n Used to indicate that the instance was missing for some time period");
   console.log(data);
   
@@ -169,7 +162,7 @@ q.Do(
 })  
 .then(function(){ })
 .catch(function(error){
-  console.log("\n The instance data will not be retrievable at that point until it is created\n");
+  console.log("\nThe instance data will not be retrievable at that point until it is created\n");
   console.log(error.message);
 })
 .then(function () {
