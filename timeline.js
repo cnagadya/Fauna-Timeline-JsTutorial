@@ -1,14 +1,16 @@
+'use strict';
+
 var faunadb = require("faunadb"),
     q = faunadb.query,
     client = new faunadb.Client({ secret: 'YOUR_FAUNADB_ADMIN_SECRET' }),
     db_name = "car_dealers",
     db_role = "server",
     class_name = "cars",
-    reference,
     instance_data = { model: "mustang", license: "EATMYDUST", price: 40000 },
     new_instance_data = { license: "ATETHEDUST",price: 50000 },
     insert_ts=Math.floor((new Date()).getTime()/ 1000),
-    resurrect_ts = insert_ts + 1;
+    resurrect_ts = insert_ts + 1,
+    reference,new_instance,update_ref;
 
 client.query(
 q.Do(
@@ -98,7 +100,7 @@ q.Do(
   )
 })
 .then(function() {
-  console.log("\nEvent  successfully removed \n");
+  console.log("\nLast event  successfully removed \n");
 
   // get instance
   return client.query(q.Get(q.Ref(reference))) 
