@@ -6,9 +6,10 @@ var faunadb = require("faunadb"),
     db_name = "car_dealers",
     db_role = "server",
     class_name = "cars",
+    index_name = "cars_index",
     instance_data = { model: "mustang", license: "EATMYDUST", price: 40000 },
     new_instance_data = { license: "ATETHEDUST",price: 50000 },
-    insert_ts=Math.floor((new Date()).getTime()/ 1000),
+    insert_ts = Math.floor((new Date()).getTime()/ 1000),
     resurrect_ts = insert_ts + 1,
     reference,new_instance,update_ref;
 
@@ -35,7 +36,14 @@ q.Do(
 .then(function() {
   // Create Mustang Incidence
   return client.query(
-    q.Create(q.Class(class_name), { data: instance_data }))  
+    q.Do(
+      q.If(q.Exists(q.Index(index_name)), "Index exists",  q.CreateIndex({ 
+        name: index_name, 
+        source: q.Class(class_name)
+      })),
+      q.Create(q.Class(class_name), { data: instance_data })
+  )
+  )  
 })
 .then(function(instance) {
   reference = "classes/cars/" + instance.ref.id;
